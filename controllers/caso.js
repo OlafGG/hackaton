@@ -1,7 +1,7 @@
-const getConversacion = (req, res) => {
+const getCaso = (req, res) => {
     res.status(200).json('Iniciar conversacion');
 }
 
 module.exports = {
-    getConversacion
+    getCaso
 }

@@ -35,7 +35,7 @@ class Server {
         // this.app.use(this.paths.evidencia, require('../routes/evidencia'));
         // this.app.use(this.paths.sentencia, require('../routes/setencia'));
         // this.app.use(this.paths.testigo, require('../routes/testigo'));
-        this.app.use(this.paths.inicio, require('../routes/inicioConversacion'));
+        this.app.use(this.paths.inicio, require('../routes/caso'));
     }
 
     listen(){
