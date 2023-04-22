@@ -1,9 +1,9 @@
 const { Router } = require('express');
-//const { getacusadono, getacusadonos, postacusadono, deleteacusadono, patchacusadono} = require('../controllers/acusadonos.controllers');
+const {getAcusado, postAcusado} = require('../controllers/acusado')
 
 const acusado = Router();
 
-acusado.get('/', getacusadono);
-acusado.post('/', postacusadono);
+acusado.get('/', getAcusado);
+acusado.post('/', postAcusado);
 
 module.exports = acusado;

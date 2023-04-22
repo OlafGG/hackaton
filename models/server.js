@@ -12,7 +12,9 @@ class Server {
             evidencia: '/hakathon/api/evidencia',
             sentencia: '/hakathon/api/sentencia',
             testigo: '/hakathon/api/testigo',
-            inicio: '/hackathon/api/inicio'
+            caso: '/hackathon/api/caso',
+            defensor: '/hackathon/api/defensor',
+            juez: '/hackathon/api/juez'
         }
 
         //Conectar a la base de datos
@@ -30,12 +32,14 @@ class Server {
 
     routes(){
         //rutas que tomara la api
-        // this.app.use(this.paths.acusado, require('../routes/acusado'));
-        // this.app.use(this.paths.caso, require('../routes/caso'));
-        // this.app.use(this.paths.evidencia, require('../routes/evidencia'));
-        // this.app.use(this.paths.sentencia, require('../routes/setencia'));
-        // this.app.use(this.paths.testigo, require('../routes/testigo'));
-        this.app.use(this.paths.inicio, require('../routes/caso'));
+        this.app.use(this.paths.acusado, require('../routes/acusado'));
+        this.app.use(this.paths.caso, require('../routes/caso'));
+        this.app.use(this.paths.evidencia, require('../routes/evidencia'));
+        this.app.use(this.paths.sentencia, require('../routes/setencia'));
+        this.app.use(this.paths.testigo, require('../routes/testigo'));
+        this.app.use(this.paths.caso, require('../routes/caso'));
+        this.app.use(this.paths.defensor, require('../routes/defensor'));
+        this.app.use(this.paths.juez, require('../routes/juez'));
     }
 
     listen(){
