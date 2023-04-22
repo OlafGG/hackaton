@@ -1,42 +1,80 @@
-const {openai} = require('../config/config');
 
-const dialogo = [];
 
-const getCaso = async(req, res) => {
-    const prompt = req.query;
-    console.log(prompt)
-    try{
-        // const completion = await openai.createCompletion({
-        //     model: "text-davinci-003",
-        //     prompt: `Dado este caso de juicio oral sobre el caso: La acusación sostiene que el acusado, José Armando, cometió un robo a mano armada en una estación de gasolina local. Según la acusación, José entró a la estación de gasolina con un arma y amenazó al empleado, exigiendo que le entregara todo el dinero en la caja registradora. Después de que el empleado le entregara el dinero, José huyó del lugar en un vehículo que había estacionado fuera de la estación de gasolina. Cuando te envie la palabra "Juez" simulará la respuesta del juez, en dado caso que el juez se dirija al abogado defensor generaras la respuesta automáticamente del abogado defensor, cuando te diga la palabra "Defensor" simularas la respuesta del abogado defensor, en cambio cuando te mande la palabra "Fiscal: " procesaras la respuesta que te mande y generaras una respuesta del juez o del abogado defensor.`,
-        //     max_tokens: 450
-        // });
+
+
+
+
+
+
+const { openai } = require('../config/config');
+
+
+
+
+let INITIAL_PROMPT = `Este es un caso de juicio oral en el que se acusa a José Armando de cometer un robo a mano armada en una estación de gasolina local. La acusación afirma que entró a la estación con un arma, amenazó al empleado y se llevó todo el dinero de la caja registradora antes de huir en un vehículo. Habrá un juez, un abogado defensor y un fiscal involucrados en el juicio. Cuando se mencione la palabra "Juez", se simulará la respuesta del Juez. Cuando se mencione la palabra "Defensor", se simulará la respuesta del  Defensor. Cuando se mencione la palabra "Fiscal", se procesará la respuesta que se envíe y se generará una respuesta del Juez o Defensor. Solo si es el turno del Fiscal será mi siguiente respuesta. Para continuar el dialogo sin la participación del fiscal solo pondré la palabra "PASO"`;
+
+let conversation_history = INITIAL_PROMPT + "\n";
+// USERNAME = "USER";
+let AI_NAME = "AI";
+
+
+peticion = async (prompt) => {
+    try {
         const response = await openai.createCompletion({
             model: "text-davinci-003",
-            prompt: `Dado este caso de juicio oral sobre el caso: La acusación sostiene que el acusado, José Armando, cometió un robo a mano armada en una estación de gasolina local. Según la acusación, José entró a la estación de gasolina con un arma y amenazó al empleado, exigiendo que le entregara todo el dinero en la caja registradora. Después de que el empleado le entregara el dinero, José huyó del lugar en un vehículo que había estacionado fuera de la estación de gasolina. Cuando te envie la palabra "Juez" simulará la respuesta del juez, en dado caso que el juez se dirija al abogado defensor generaras la respuesta automáticamente del abogado defensor, cuando te diga la palabra "Defensor" simularas la respuesta del abogado defensor, en cambio cuando te mande la palabra "Fiscal: " procesaras la respuesta que te mande y generaras una respuesta del juez o del abogado defensor. No generes ninguna conversacion cuando al "Fiscal" le toque hablar deberas esperar a que se te mande una respuesta". Si es turno del fiscal espera la respuesta`,
+            prompt: prompt,
             max_tokens: 3500,
             temperature: 0,
-          });
-        dialogo.push(response.data.choices[0].text);
-        console.log(dialogo);
-        res.send(response.data.choices[0].text);
-    }catch(err){
-        res.send(err);
+        });
+        return response.data.choices[0].text;
+    } catch (err) {
+        return err;
     }
 }
+handle_input = async (input_str, conversation_history, AI_NAME, USERNAME = 'Fiscal') => {
+    /* Updates the conversation history and generates a response using GPT-3. */
 
-const postCaso = async(req, res) => {
-    const {promp} = req.query;
-    const response = await openai.createCompletion({
-        model: "text-davinci-003",
-        prompt: `${promp}`,
-        max_tokens: 3500,
-        temperature: 0,
-      });
-    res.send(response.data.choices[0].text);
+    conversation_history += `${USERNAME}: ${input_str}\n`;
+    // console.log(conversation_history)
+    let message = await peticion(conversation_history);
+    conversation_history += `${AI_NAME}: ${message}\n`;
+    // console.log(`${AI_NAME}: ${message}`);
+    return conversation_history;
 }
+
+
+const postCaso = async (req, res) => {
+    const { texto } = req.body;
+    // console.log(conversation_history);
+    // user_input = input(`${USERNAME}: `);
+    // console.log(texto)
+    const historialDevuelto = await handle_input(texto, conversation_history, AI_NAME);
+    conversation_history = historialDevuelto;
+    // let respuesta = await peticion(conversation_history);
+    res.send(conversation_history);
+
+
+
+    // const prompt = req.query;
+    // console.log(prompt)
+
+}
+
+// const postCaso = async(req, res) => {
+//     const {promp} = req.query;
+//     const response = await openai.createCompletion({
+//         model: "text-davinci-003",
+//         prompt: `${promp}`,
+//         max_tokens: 3500,
+//         temperature: 0,
+//       });
+//     res.send(response.data.choices[0].text);
+// }
 
 module.exports = {
-    getCaso,
+    // getCaso,
     postCaso
 }
+
+
+

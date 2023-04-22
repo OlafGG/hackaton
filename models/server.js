@@ -1,8 +1,10 @@
 const express = require('express');
 
 class Server {
-    constructor(){
+    constructor() {
         this.app = express();
+        this.app.use(express.urlencoded({ extended: true }));
+        this.app.use(express.json());
         this.port = process.env.PORT;
 
         //creacion de las rutas base para los movimientos
@@ -30,7 +32,7 @@ class Server {
     // }
 
 
-    routes(){
+    routes() {
         //rutas que tomara la api
         this.app.use(this.paths.acusado, require('../routes/acusado'));
         this.app.use(this.paths.caso, require('../routes/caso'));
@@ -42,7 +44,7 @@ class Server {
         this.app.use(this.paths.juez, require('../routes/juez'));
     }
 
-    listen(){
+    listen() {
         this.app.listen(this.port, () => {
             console.log('Servidor corriendo en el puerto: ', this.port || 3000);
         })
