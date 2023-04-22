@@ -51,7 +51,28 @@ const postCaso = async (req, res) => {
     const historialDevuelto = await handle_input(texto, conversation_history, AI_NAME);
     conversation_history = historialDevuelto;
     // let respuesta = await peticion(conversation_history);
-    res.send(conversation_history);
+
+    const copy = conversation_history.split('AI:');
+    const arregloUltimo = copy[copy.length - 1].split('\n');
+    const prueba = arregloUltimo.map(result => {
+        if(result.indexOf(":") != -1){
+            return result;
+        }
+    })
+
+    const jsonArreglo = [];
+
+    prueba.forEach(result => {
+        if(result != null){
+            const copyResult = result.split(':');
+            jsonArreglo.push({
+                "nombre": copyResult[0],
+                "dialogo": copyResult[1]
+            })
+        }
+    });
+    // res.send(conversation_history);
+    res.send(jsonArreglo);
 
 
 

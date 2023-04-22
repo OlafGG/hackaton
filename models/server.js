@@ -1,10 +1,13 @@
 const express = require('express');
+const cors = require('cors');
 
 class Server {
     constructor() {
         this.app = express();
         this.app.use(express.urlencoded({ extended: true }));
         this.app.use(express.json());
+        this.app.use(cors());
+        
         this.port = process.env.PORT;
 
         //creacion de las rutas base para los movimientos
