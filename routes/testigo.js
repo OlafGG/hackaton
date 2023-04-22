@@ -1,5 +1,5 @@
-const { Router } = requiere('express');
-const { getTestigo, postTestigo } = requiere('../controllers/testigo.js')
+const { Router } = require('express');
+const { getTestigo, postTestigo } = require('../controllers/testigo.js');
 
 const testigo = Router();
 
